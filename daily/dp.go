@@ -49,3 +49,22 @@ func MaxProfit309(prices []int) int {
 
 	return max(f[n-1][1], f[n-1][2])
 }
+
+// MaxProfit714
+// 714. Best Time to Buy and Sell Stock with Transaction Fee
+func MaxProfit714(prices []int, fee int) int {
+	n := len(prices)
+	if n == 0 {
+		return 0
+	}
+
+	// f[i][0]: 第i天结束后有股票 所获最大利润
+	// f[i][1]: 第i天结束后无股票 所获最大利润
+	f := make([][2]int, n)
+	f[0][0] = -prices[0]
+	for i := 1; i < n; i++ {
+		f[i][0] = max(f[i-1][0], f[i-1][1]-prices[i])
+		f[i][1] = max(f[i-1][0]+prices[i]-fee, f[i-1][1])
+	}
+	return f[n-1][1]
+}
