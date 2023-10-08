@@ -1,6 +1,8 @@
-package daily
+package dp
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestMaxProfit123(t *testing.T) {
 	prices := []int{7, 6, 4, 3, 1}
