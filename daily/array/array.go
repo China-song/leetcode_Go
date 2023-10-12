@@ -3,6 +3,7 @@ package array
 import (
 	"math"
 	"sort"
+	"strconv"
 )
 
 /*
@@ -69,4 +70,24 @@ func abs(x int) int {
 		return -x
 	}
 	return x
+}
+
+/*
+FindTheArrayConcVal2562
+2562. Find the Array Concatenation Value
+*/
+func FindTheArrayConcVal2562(nums []int) int64 {
+	var answer int64
+	n := len(nums)
+	for i, j := 0, n-1; i <= j; {
+		if i == j {
+			answer += int64(nums[i])
+			break
+		}
+		concat, _ := strconv.Atoi(strconv.Itoa(nums[i]) + strconv.Itoa(nums[j]))
+		answer += int64(concat)
+		i++
+		j--
+	}
+	return answer
 }
