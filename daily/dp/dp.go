@@ -1,5 +1,7 @@
 package dp
 
+import "sort"
+
 // MaxProfit123
 // 123. 买卖股票的最佳时机 III
 func MaxProfit123(prices []int) int {
@@ -66,4 +68,28 @@ func MaxProfit714(prices []int, fee int) int {
 		buy = max(buy, tmp-prices[i])
 	}
 	return sell
+}
+
+/*
+MaxSatisfaction1402
+1402. Reducing Dishes
+*/
+func MaxSatisfaction1402(satisfaction []int) int {
+	n := len(satisfaction)
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([]int, n+1)
+	}
+	sort.Ints(satisfaction)
+	res := 0
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= i; j++ {
+			dp[i][j] = dp[i-1][j-1] + satisfaction[i-1]*j
+			if j < i {
+				dp[i][j] = max(dp[i][j], dp[i-1][j])
+			}
+			res = max(res, dp[i][j])
+		}
+	}
+	return res
 }
