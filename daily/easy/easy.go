@@ -30,3 +30,19 @@ func SplitNum2578(num int) int {
 
 	return num1 + num2
 }
+
+func categorizeBox(length int, width int, height int, mass int) string {
+	bulky := 0
+	heavy := 0
+	var volume int64
+	volume = int64(length) * int64(width) * int64(height)
+	if length >= 1e4 || width >= 1e4 || height >= 1e4 || volume >= int64(1e9) {
+		bulky = 1
+	}
+	if mass >= 100 {
+		heavy = 1
+	}
+
+	ans := [2][2]string{{"Neither", "Heavy"}, {"Bulky", "Both"}}
+	return ans[bulky][heavy]
+}

@@ -1,6 +1,9 @@
 package dp
 
-import "sort"
+import (
+	"sort"
+	"strconv"
+)
 
 // MaxProfit123
 // 123. 买卖股票的最佳时机 III
@@ -92,4 +95,105 @@ func MaxSatisfaction1402(satisfaction []int) int {
 		}
 	}
 	return res
+}
+
+/*
+NumRollsToTarget1155
+
+1155. Number of Dice Rolls With Target Sum
+
+Middle Dynamic Programming
+*/
+func NumRollsToTarget1155(n int, k int, target int) int {
+	// 方法一， 使用二维数组
+	// 分治 f(n, target) = f(n-1, target-1) + f(n-1, target-2) + ... + f(n-1, target-k) (target-x>=0)
+	//f := make([][]int, n+1)
+	//for i := 0; i <= n; i++ {
+	//	f[i] = make([]int, target+1)
+	//}
+	//f[0][0] = 1 // no need to roll die f[1][x] = f[0][x-1] + f[0][x-2] + .. f[0][0] ( =1 if x<=k else =0)
+	//for i := 1; i <= n; i++ {
+	//	for j := 1; j <= target; j++ {
+	//		// 分治 f(i, j) = f(i-1, j-1) + f(n-1, j-2) + ... + f(n-1, j-k) (j-x>=0)
+	//		for x := 1; x <= k; x++ {
+	//			if j-x >= 0 {
+	//				f[i][j] = (f[i][j] + f[i-1][j-x]) % (1e9 + 7)
+	//			}
+	//		}
+	//	}
+	//}
+	//return f[n][target]
+
+	// 方法二，使用两个一维数组
+	//mod := int(1e9 + 7)
+	//f := make([]int, target+1)
+	//f[0] = 1bC
+	//for i := 1; i <= n; i++ {
+	//	g := make([]int, target+1)
+	//	for j := 1; j <= target; j++ {
+	//		for x := 1; x <= k; x++ {
+	//			if j-x >= 0 {
+	//				g[j] = (g[j] + f[j-x]) % mod
+	//			}
+	//		}
+	//	}
+	//	f = g
+	//}
+	//return f[target]
+
+	// 方法三，只用一个一维数组
+	mod := int(1e9 + 7)
+	f := make([]int, target+1)
+	f[0] = 1
+	for i := 1; i <= n; i++ {
+		for j := target; j >= 1; j-- {
+			f[j] = 0
+			for x := 1; x <= k; x++ {
+				if j-x >= 0 {
+					f[j] = (f[j] + f[j-x]) % mod
+				}
+			}
+		}
+	}
+	return f[target]
+}
+
+/*
+find i, 1<=i<=n
+*/
+func punishmentNumber(n int) int {
+	ans := 0
+	for i := 1; i <= n; i++ {
+		if isPunish(i, i*i) {
+			ans += i
+		}
+	}
+	return ans
+}
+
+func isPunish(i, square int) bool {
+	squareStr := strconv.Itoa(square)
+	return dfs(i, 0, 0, squareStr, 0)
+}
+
+func dfs(i int, start int, end int, squareStr string, sum int) bool {
+	if start >= len(squareStr) {
+		if sum == i {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	// 是否将[start, end]作为一个数字 加入到sum中
+	// 是
+	num, _ := strconv.Atoi(squareStr[start : end+1])
+	if dfs(i, end+1, end+1, squareStr, sum+num) {
+		return true
+	}
+	// 否
+	if dfs(i, start, end+1, squareStr, sum) {
+		return true
+	}
+	return false
 }

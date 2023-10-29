@@ -99,3 +99,101 @@ type Student struct {
 	Point int
 	Id    int
 }
+
+/*
+MaxArea1465
+1465. Maximum Area of a Piece of Cake After Horizontal and Vertical Cuts
+*/
+func MaxArea1465(h int, w int, horizontalCuts []int, verticalCuts []int) int {
+	// sort in increasing order
+	sort.Ints(horizontalCuts)
+	sort.Ints(verticalCuts)
+	maxH, maxW := 0, 0
+	for i := 0; i < len(horizontalCuts); i++ {
+		if i == 0 {
+			maxH = horizontalCuts[0]
+		} else {
+			maxH = max(maxH, horizontalCuts[i]-horizontalCuts[i-1])
+		}
+	}
+	maxH = max(maxH, h-horizontalCuts[len(horizontalCuts)-1])
+	for i := 0; i < len(verticalCuts); i++ {
+		if i == 0 {
+			maxW = verticalCuts[0]
+		} else {
+			maxW = max(maxW, verticalCuts[i]-verticalCuts[i-1])
+		}
+	}
+	maxW = max(maxW, w-verticalCuts[len(verticalCuts)-1])
+
+	return maxH * maxW
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func tupleSameProduct(nums []int) int {
+	n := len(nums)
+	if n < 4 {
+		return 0
+	}
+	sort.Ints(nums)
+	ans := 0
+	a, c, d, b := 0, 1, 2, 3
+	for ; a < n; a++ {
+		for ; c < n; c++ {
+			for ; d < n; d++ {
+				for ; b < n; b++ {
+					left := nums[a] * nums[b]
+					right := nums[c] * nums[d]
+					if left < right {
+						continue
+					} else if left == right {
+						ans++
+					} else {
+						break
+					}
+				}
+			}
+		}
+	}
+	return ans * 8
+}
+
+/*
+HIndex274
+274. H-Index
+*/
+func HIndex274(citations []int) int {
+	// 方法一
+	//sort.Ints(citations)
+	//h := 0 // 当前h-index
+	//for i := len(citations) - 1; i >= 0 && citations[i] > h; i-- {
+	//	h++
+	//}
+	//return h
+
+	// 方法三：二分搜索
+	// [left, right]
+	left, right := 0, len(citations)
+	var mid int
+	for left < right {
+		mid = (left + right + 1) >> 1
+		cnt := 0
+		for _, v := range citations {
+			if v >= mid {
+				cnt++
+			}
+		}
+		if cnt >= mid {
+			left = mid
+		} else {
+			right = mid - 1
+		}
+	}
+	return left
+}
