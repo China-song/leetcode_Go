@@ -46,3 +46,35 @@ func categorizeBox(length int, width int, height int, mass int) string {
 	ans := [2][2]string{{"Neither", "Heavy"}, {"Bulky", "Both"}}
 	return ans[bulky][heavy]
 }
+
+/*
+CountPoints2103
+2103. 环和杆
+*/
+func CountPoints2103(rings string) int {
+	//res := 0
+	//ring := make([][3]bool, 10)
+	//color := map[uint8]int{'R': 0, 'G': 1, 'B': 2}
+	//for i := 0; i < len(rings); i += 2 {
+	//	ring[rings[i+1]-'0'][color[rings[i]]] = true
+	//}
+	//for i := 0; i < 10; i++ {
+	//	if ring[i][0] && ring[i][1] && ring[i][2] {
+	//		res++
+	//	}
+	//}
+	//return res
+	state := make([]int, 10)
+	color := map[byte]int{'R': 1, 'G': 2, 'B': 4}
+	n := len(rings)
+	for i := 0; i < n; i += 2 {
+		state[rings[i+1]-'0'] |= color[rings[i]]
+	}
+	res := 0
+	for i := 0; i < 10; i++ {
+		if state[i] == 7 {
+			res++
+		}
+	}
+	return res
+}

@@ -197,3 +197,65 @@ func HIndex274(citations []int) int {
 	}
 	return left
 }
+
+/**
+* Definition for a Node.
+ */
+type Node struct {
+	Val   int
+	Left  *Node
+	Right *Node
+	Next  *Node
+}
+
+func connect(root *Node) *Node {
+	if root == nil {
+		return nil
+	}
+	q := []*Node{root}
+	for len(q) > 0 {
+		tmp := q
+		q = nil
+		for i, node := range tmp {
+			if (i + 1) < len(tmp) {
+				node.Next = tmp[i+1]
+			}
+			if node.Left != nil {
+				q = append(q, node.Left)
+			}
+			if node.Right != nil {
+				q = append(q, node.Right)
+			}
+		}
+	}
+	return root
+}
+
+/*
+FindRepeatedDnaSequences187
+187. Repeated DNA Sequences
+*/
+func FindRepeatedDnaSequences187(s string) (ans []string) {
+	// 哈希表 + 滑动窗口 + 位运算
+	const L = 10
+	mp := map[byte]int{'A': 0, 'C': 1, 'G': 2, 'T': 3}
+
+	n := len(s)
+	if n <= L {
+		return
+	}
+	x := 0
+	for _, ch := range s[:L-1] {
+		x = x<<2 | mp[byte(ch)]
+	}
+
+	cnt := map[int]int{}
+	for i := 0; i <= n-L; i++ {
+		x = (x<<2 | mp[s[i+L-1]]) & ((1 << 20) - 1)
+		cnt[x]++
+		if cnt[x] == 2 {
+			ans = append(ans, s[i:i+L])
+		}
+	}
+	return
+}

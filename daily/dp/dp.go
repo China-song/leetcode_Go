@@ -5,6 +5,37 @@ import (
 	"strconv"
 )
 
+/*
+MaxProfit121
+121. 买卖股票的最佳时机
+*/
+func MaxProfit121(prices []int) int {
+	/*							the nth day no sell   the nth day
+
+		answer(prices, n) = max(answer(prices, n-1), prices[n]-min(prices, n-1))
+	    profit(n) = max(profit(n-1), prices[n-1] - minPrices(n-1))
+	*/
+	maxProfit, minPrice := 0, prices[0]
+	for _, price := range prices {
+		maxProfit = max(maxProfit, price-minPrice)
+		minPrice = min(minPrice, price)
+	}
+	return maxProfit
+}
+
+/*
+MaxProfit122
+122. Best Time to Buy and Sell Stock II
+*/
+func MaxProfit122(prices []int) int {
+	n := len(prices)
+	dp0, dp1 := 0, -prices[0]
+	for i := 1; i < n; i++ {
+		dp0, dp1 = max(dp0, dp1+prices[i]), max(dp0-prices[i], dp1)
+	}
+	return dp0
+}
+
 // MaxProfit123
 // 123. 买卖股票的最佳时机 III
 func MaxProfit123(prices []int) int {
@@ -25,6 +56,13 @@ func max(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func min(a, b int) int {
+	if a > b {
+		return b
+	}
+	return a
 }
 
 // MaxProfit309
