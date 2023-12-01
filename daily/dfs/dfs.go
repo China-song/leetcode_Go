@@ -1,5 +1,7 @@
 package dfs
 
+import "math"
+
 /*
 SmallestMissingValueSubtree2003
 2003. Smallest Missing Genetic Value in Each Subtree
@@ -50,6 +52,38 @@ func SmallestMissingValueSubtree2003(parents []int, nums []int) []int {
 
 func max(a, b int) int {
 	if a > b {
+		return a
+	}
+	return b
+}
+
+/*
+2304. Minimum Path Cost in a Grid
+*/
+func minPathCost(grid [][]int, moveCost [][]int) int {
+	m, n := len(grid), len(grid[0])
+	f := make([][]int, m)
+	for i := range f {
+		f[i] = make([]int, n)
+	}
+	f[m-1] = grid[m-1]
+	for i := m - 2; i >= 0; i-- {
+		for j, g := range grid[i] {
+			f[i][j] = math.MaxInt
+			for k, c := range moveCost[g] {
+				f[i][j] = min(f[i][j], grid[i][j]+c+f[i+1][k])
+			}
+		}
+	}
+	res := math.MaxInt
+	for j := range f[0] {
+		res = min(res, f[0][j])
+	}
+	return res
+}
+
+func min(a, b int) int {
+	if a < b {
 		return a
 	}
 	return b

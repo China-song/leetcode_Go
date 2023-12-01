@@ -23,3 +23,7 @@ func TestThreeSumClosest16(t *testing.T) {
 	}
 
 }
+
+func TestLongestAlternatingSubarray(t *testing.T) {
+	LongestAlternatingSubarray([]int{2, 3, 4, 5}, 4)
+}

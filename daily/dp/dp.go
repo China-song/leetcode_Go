@@ -1,6 +1,7 @@
 package dp
 
 import (
+	"math"
 	"sort"
 	"strconv"
 )
@@ -234,4 +235,97 @@ func dfs(i int, start int, end int, squareStr string, sum int) bool {
 		return true
 	}
 	return false
+}
+
+/*
+53. 最大子数组和
+*/
+func maxSubArray(nums []int) (ans int) {
+	// 方法一 动态规划
+	/*
+		dp[i]表示以nums[i]为结尾的连续子数组的最大和
+		如dp[3]表示max(sum[0..3], sum[1..3], sum[2..3], sum[3..3])
+		则最终答案为max(dp[0], dp[1], .. , dp[n-1)
+		dp[i] = max(dp[i-1]+nums[i], nums[i])
+		dp[0] = nums[0]
+		n := len(nums)
+		dp := make([]int, n)
+		dp[0] = nums[0]
+		ans = dp[0]
+		for i := 1; i < n; i++ {
+			dp[i] = max(dp[i-1]+nums[i], nums[i])
+			ans = max(ans, dp[i])
+		}
+		return ans
+	*/
+
+	// 方法二 分治
+	return get(nums, 0, len(nums)-1).mSUm
+}
+
+func get(nums []int, l, r int) Status {
+	if l == r {
+		return Status{nums[l], nums[l], nums[l], nums[l]}
+	}
+	m := l + (r-l)>>1
+	lSub := get(nums, l, m)
+	rSub := get(nums, m+1, r)
+	return pushUp(lSub, rSub)
+}
+
+func pushUp(l, r Status) Status {
+	lSum := max(l.lSum, l.iSum+r.lSum)
+	rSum := max(r.rSum, r.iSum+l.rSum)
+	iSum := l.iSum + r.iSum
+	mSum := max(max(l.mSUm, r.mSUm), l.rSum+r.lSum)
+	return Status{lSum, rSum, mSum, iSum}
+}
+
+type Status struct {
+	lSum, rSum, mSUm, iSum int
+}
+
+/*
+53. 最大子数组和
+*/
+func maxSubArray3(nums []int) int {
+	/*
+		方法三 最大子数组和相对于求最大 前缀和的差 ，转换为一次交易股票问题
+	*/
+	ans := math.MinInt
+	minPreSum := 0
+	preSum := 0 // 0 nums[0] nums[0..1] nums[0..2] .. nums[0..n-1]
+
+	for _, num := range nums {
+		preSum += num
+		ans = max(ans, preSum-minPreSum)
+		minPreSum = min(minPreSum, preSum)
+	}
+	return ans
+}
+
+/*
+64. Minimum Path Sum
+*/
+func minPathSum(grid [][]int) int {
+	//
+	m, n := len(grid), len(grid[0])
+	f := make([][]int, m)
+	for i := range f {
+		f[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if i == 0 && j == 0 {
+				f[i][j] = grid[i][j]
+			} else if i == 0 {
+				f[i][j] = f[i][j-1] + grid[i][j]
+			} else if j == 0 {
+				f[i][j] = f[i-1][j] + grid[i][j]
+			} else {
+				f[i][j] = min(f[i-1][j], f[i][j-1]) + grid[i][j]
+			}
+		}
+	}
+	return f[m-1][n-1]
 }

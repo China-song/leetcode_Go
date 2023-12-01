@@ -259,3 +259,23 @@ func FindRepeatedDnaSequences187(s string) (ans []string) {
 	}
 	return
 }
+
+/*
+2216. Minimum Deletions to Make Array Beautiful
+*/
+func minDeletion(nums []int) (ans int) {
+	n := len(nums)
+	check := true // 只检查nums[i] 与 nums[i+1]， 其中i%2==0
+	for i := 0; i+1 < n; i++ {
+		if check && nums[i] == nums[i+1] {
+			ans++ // 删除nums[i]
+		} else {
+			check = !check
+		}
+	}
+	// i == n-1 处于最后一个元素
+	if (n-ans)%2 != 0 {
+		ans++
+	}
+	return ans
+}

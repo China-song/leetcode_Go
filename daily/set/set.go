@@ -1,6 +1,9 @@
 package set
 
-import "github.com/emirpasic/gods/trees/redblacktree"
+import (
+	"github.com/emirpasic/gods/sets/treeset"
+	"github.com/emirpasic/gods/trees/redblacktree"
+)
 
 /*
 StockPrice
@@ -12,7 +15,7 @@ type StockPrice struct {
 	maxTimestamp int                // 当前时间
 }
 
-func Constructor() StockPrice {
+func Constructor1() StockPrice {
 	return StockPrice{prices: redblacktree.NewWithIntComparator(), timePriceMap: map[int]int{}, maxTimestamp: 0}
 }
 
@@ -53,3 +56,43 @@ func (this *StockPrice) Maximum() int {
 func (this *StockPrice) Minimum() int {
 	return this.prices.Left().Key.(int)
 }
+
+/*
+2336. Smallest Number in Infinite Set
+*/
+type SmallestInfiniteSet struct {
+	boundary int          // 该集合中存在一个数，所有>=它的都在集合中
+	s        *treeset.Set // 所以只需保存小于它的数 其余数boundary一个就可以代表
+}
+
+func Constructor() SmallestInfiniteSet {
+	return SmallestInfiniteSet{boundary: 1, s: treeset.NewWithIntComparator()}
+}
+
+func (this *SmallestInfiniteSet) PopSmallest() (ans int) {
+	if this.s.Empty() {
+		// 最小的就是boundary
+		ans = this.boundary
+		this.boundary++
+
+	} else {
+		it := this.s.Iterator()
+		it.Next()
+		ans = it.Value().(int)
+		this.s.Remove(ans)
+	}
+	return ans
+}
+
+func (this *SmallestInfiniteSet) AddBack(num int) {
+	if num < this.boundary {
+		this.s.Add(num)
+	}
+}
+
+/**
+ * Your SmallestInfiniteSet object will be instantiated and called as such:
+ * obj := Constructor();
+ * param_1 := obj.PopSmallest();
+ * obj.AddBack(num);
+ */
